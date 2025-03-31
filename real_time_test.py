@@ -14,7 +14,7 @@ input_features = [
     'spectral_rolloff', 'max_intensity', 'dominant_freq', 'duration',
     'mfcc_1', 'mfcc_2', 'mfcc_3', 'mfcc_4', 'mfcc_6',
     'mfcc_7', 'mfcc_8', 'mfcc_13'
-]
+]kakckakakckalajajmenuju se
 
 label_map = {
     0: 'tleskani',

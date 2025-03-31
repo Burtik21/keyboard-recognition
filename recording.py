@@ -5,44 +5,38 @@ import os
 
 recorder = AudioRecorder()
 processor = AudioProcessor()
-csv_filename = 'keyboard_data.csv'
+csv_filename = 'data.csv'
 
-# Připrav seznam pro data
 data = []
 
 for i in range(50):
-    print(f"\n🎙️ [{i + 1}/100] Připrav se na záznam. Teď!")
+    print(f"\n🎙️ [{i + 1}/50] Připrav se na záznam. Teď!")
 
     audio = recorder.record_audio(duration=1)
-
-    # Aplikuj filtry
     filtered_audio = processor.apply_filters(audio)
 
-    # Detekuj impulz
-    start, end, duration = processor.detect_impulse(filtered_audio, threshold=0.0015)
+    # Detekuj impulzy (vrací seznam)
+    impulses = processor.detect_impulses(filtered_audio, threshold=0.0011j)
 
-    if duration is None:
-        print("⚠️ Žádný impulz nenalezen. Vzorek přeskočen.")
-    else:
+
+    if impulses:
+        start, end, duration = impulses[0]  # vezmeme jen první
         print(f"✅ Impulz: začátek={start:.4f}s, konec={end:.4f}s, trvání={duration:.4f}s")
 
-        # Extrahuj features
         impulse_audio = filtered_audio[int(start * recorder.rate):int(end * recorder.rate)]
         features = processor.extract_features(impulse_audio)
-
-        # Přidej další informace (duration, sound_category)
         features['duration'] = duration
-        features['sound_category'] = 'vykrik'
+        features['sound_category'] = '1'  # nebo 'klavesnice', jak chceš
 
-        # Přidej do seznamu dat
         data.append(features)
-
         print("✅ Features uloženy.")
+    else:
+        print("⚠️ Žádný impulz nenalezen. Vzorek přeskočen.")
 
-    print("Konec záznamu. Čekám 2 sekundy.")
-    time.sleep(1)
+    print("⏳ Konec záznamu. Čekám 1 sekundu.")
+    time.sleep(0.5)
 
-# Uložení dat do CSV souboru
+# Uložení do CSV
 df = pd.DataFrame(data)
 df.to_csv(csv_filename, index=False, mode='a', header=not os.path.exists(csv_filename))
 
