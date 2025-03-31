@@ -6,26 +6,19 @@ import scipy.signal as signal
 import noisereduce as nr
 import matplotlib.pyplot as plt
 
+import sounddevice as sd
+import numpy as np
+
 class AudioRecorder:
-    def __init__(self, rate=44100, channels=1, chunk=1024):
+    def __init__(self, rate=44100, channels=1):
         self.rate = rate
         self.channels = channels
-        self.chunk = chunk
-        self.format = pyaudio.paInt16
 
     def record_audio(self, duration):
-        p = pyaudio.PyAudio()
-        stream = p.open(format=self.format, channels=self.channels,
-                        rate=self.rate, input=True, frames_per_buffer=self.chunk)
-
-        frames = [stream.read(self.chunk) for _ in range(int(self.rate / self.chunk * duration))]
-
-        stream.stop_stream()
-        stream.close()
-        p.terminate()
-
-        audio = np.frombuffer(b''.join(frames), dtype=np.int16).astype(np.float32) / 32768.0
-        return audio
+        print("🎙️ Nahrávám...")
+        audio = sd.rec(int(duration * self.rate), samplerate=self.rate, channels=self.channels, dtype='float32')
+        sd.wait()
+        return audio.flatten()  # převede [n,1] na [n]
 
 class AudioProcessor:
     def __init__(self, rate=44100):
