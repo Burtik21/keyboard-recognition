@@ -10,12 +10,15 @@ THRESHOLD = 0.0011
 WINDOW_DURATION = 0.5  # sekundy
 COOLDOWN_SECONDS = 0.2
 
+
 last_detection_time = 0
 
 print("🎙️ Spouštím real-time detekci... (Ctrl+C pro ukončení)")
 
 try:
     while True:
+        print("✅ Skript spuštěn!")
+
         audio = recorder.record_audio(duration=WINDOW_DURATION)
         filtered_audio = processor.apply_filters(audio)
 
