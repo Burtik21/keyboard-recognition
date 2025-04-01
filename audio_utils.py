@@ -1,4 +1,4 @@
-import pyaudio
+import sounddevice as sd
 import numpy as np
 import librosa
 import librosa.display
@@ -6,16 +6,13 @@ import scipy.signal as signal
 import noisereduce as nr
 import matplotlib.pyplot as plt
 
-import sounddevice as sd
-import numpy as np
-
 class AudioRecorder:
     def __init__(self, rate=44100, channels=1):
         self.rate = rate
         self.channels = channels
 
+
     def record_audio(self, duration):
-        print("🎙️ Nahrávám...")
         audio = sd.rec(int(duration * self.rate), samplerate=self.rate, channels=self.channels, dtype='float32')
         sd.wait()
         return audio.flatten()  # převede [n,1] na [n]
