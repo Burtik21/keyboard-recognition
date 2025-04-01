@@ -25,6 +25,9 @@ try:
 
         if result and current_time - last_detection_time > config.COOLDOWN_SECONDS:
             print("✅ Zvuk detekován, posílám...")
+            trigger_value = detector.get_triggering_rms_value(audio)
+            if trigger_value:
+                print(f"🎯 RMS, které spustilo detekci: {trigger_value:.6f}")
             sender.send_wav(audio)
             last_detection_time = current_time
         else:

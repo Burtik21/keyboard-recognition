@@ -22,3 +22,13 @@ class AudioDetector:
             np.sqrt(np.mean(y[i:i + self.frame_length]**2))
             for i in range(0, len(y) - self.frame_length, self.hop_length)
         ])
+
+    def get_triggering_rms_value(self, audio):
+        rms = self.compute_rms_framewise(audio)
+        above = rms > self.threshold
+
+        if np.any(above):
+            index = np.argmax(above)
+            return rms[index]
+        return None
+
