@@ -19,6 +19,7 @@ print("🎙️ Spouštím real-time detekci...")
 try:
     while True:
         audio = recorder.record_audio(duration=config.WINDOW_DURATION)
+        print(audio.dtype, np.min(audio), np.max(audio))
         result = detector.detect_rms_impulse(audio)
 
         current_time = time.time()
