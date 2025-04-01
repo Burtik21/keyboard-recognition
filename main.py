@@ -1,16 +1,34 @@
-# This is a sample Python script.
+from app.audio_recorder import AudioRecorder
+from app.audio_sender import AudioSender
+from app.event_detector import AudioDetector
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+import time
+import config
 
+recorder = AudioRecorder()
+detector = AudioDetector(rate=recorder.rate)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+recorder = AudioRecorder()
+detector = AudioDetector(threshold=config.RMS_THRESHOLD)
+sender = AudioSender()
 
+last_detection_time = 0
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+print("🎙️ Spouštím real-time detekci...")
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+try:
+    while True:
+        audio = recorder.record_audio(duration=config.WINDOW_DURATION)
+        result = detector.detect_rms_impulse(audio)
+
+        current_time = time.time()
+
+        if result and current_time - last_detection_time > config.COOLDOWN_SECONDS:
+            print("✅ Zvuk detekován, posílám...")
+            sender.send_wav(audio)
+            last_detection_time = current_time
+        else:
+            print("...")
+
+except KeyboardInterrupt:
+    print("\n🛑 Ukončeno.")
