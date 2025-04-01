@@ -1,0 +1,11 @@
+
+numpy~=2.1.3
+joblib~=1.4.2
+PyAudio~=0.2.14
+matplotlib~=3.10.1
+sounddevice~=0.5.1
+scipy~=1.15.2
+noisereduce~=3.0.3
+soundfile~=0.13.1
+pyAudioAnalysis~=0.3.14
+pynput~=1.8.1
